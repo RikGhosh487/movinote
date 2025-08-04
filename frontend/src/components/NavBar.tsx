@@ -15,6 +15,12 @@ import {
     Switch,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
+
+import { useNavigate } from "react-router-dom";
+
+import LigthModeIcon from "@mui/icons-material/LightMode";
+import DarkModeIcon from "@mui/icons-material/DarkMode";
+
 import MovinoteIcon1 from "../assets/Movinote-Logo.png";
 
 export interface NavBarProps {
@@ -24,6 +30,8 @@ export interface NavBarProps {
 }
 
 export const NavBar = ({ navItems, isDarkMode, onThemeToggle }: NavBarProps) => {
+    let navigate = useNavigate();
+
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
     const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
 
@@ -35,12 +43,14 @@ export const NavBar = ({ navItems, isDarkMode, onThemeToggle }: NavBarProps) => 
         setAnchorElUser(event.currentTarget);
     };
 
-    const handleCloseNavMenu = () => {
+    const handleCloseNavMenu = (link: string) => {
         setAnchorElNav(null);
+        navigate(link);
     };
 
-    const handleCloseUserMenu = () => {
+    const handleCloseUserMenu = (link: string) => {
         setAnchorElUser(null);
+        navigate(link);
     };
 
     const theme = useTheme();
@@ -63,19 +73,24 @@ export const NavBar = ({ navItems, isDarkMode, onThemeToggle }: NavBarProps) => 
                 {!isMobile && (
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         {navItems.map((item) => (
-                            <Button
+                            <MenuItem
                                 key={item}
-                                onClick={handleCloseNavMenu}
-                                sx={{ color: 'text.primary', mx: 1 }}
+                                onClick={() => handleCloseNavMenu("/" + item.toLowerCase())}
                             >
-                                {item}
-                            </Button>
+                                <Typography textAlign="center" variant="h6">
+                                    {item}
+                                </Typography>
+                            </MenuItem>
                         ))}
-                        <Switch
-                            checked={isDarkMode}
-                            onChange={onThemeToggle}
-                            color="default"
-                        />
+                        <Box sx={{ display: 'flex', alignItems: 'center', ml: 2 }}>
+                            <LigthModeIcon sx={{ fontSize: 20, opacity: isDarkMode ? 0.4 : 1 }} />
+                            <Switch
+                                checked={isDarkMode}
+                                onChange={onThemeToggle}
+                                color="default"
+                            />
+                            <DarkModeIcon sx={{ fontSize: 20, opacity: isDarkMode ? 1 : 0.4 }} />
+                        </Box>
                     </Box>
                 )}
             </Toolbar>
