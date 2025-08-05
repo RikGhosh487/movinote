@@ -9,6 +9,12 @@ import { darkTheme, lightTheme } from './Theme';
 import { ThemeProvider as MuiThemeProvider, CssBaseline } from '@mui/material';
 import { ThemeProvider, useTheme } from './ThemeContext';
 
+const navItems = [
+  { label: 'Dashboard', link: '/dashboard' },
+  { label: 'Movies', link: '/movies' },
+  { label: 'About', link: '/about' },
+]
+
 const App = () => {
   const { isDarkMode, toggleTheme } = useTheme(); // Use the custom theme context to get the current theme mode
 
@@ -17,7 +23,7 @@ const App = () => {
       <CssBaseline />
       <BrowserRouter>
         <NavBar
-          navItems={['Dashboard', 'Movies', 'About']}
+          navItems={navItems}  // Pass the navigation items to NavBar
           isDarkMode={isDarkMode}  // Pass the current theme mode to NavBar
           onThemeToggle={toggleTheme}  // Pass the theme toggle handler to NavBar
         />

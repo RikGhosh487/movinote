@@ -1,99 +1,235 @@
-// imports
-import * as React from "react"
+import * as React from "react";
 import {
     AppBar,
     Box,
-    Container,
-    Menu,
-    Button,
+    Drawer,
+    Divider,
     IconButton,
     MenuItem,
+    List,
     Typography,
     Toolbar,
     useMediaQuery,
     useTheme,
     Switch,
+    ToggleButtonGroup,
+    ToggleButton,
 } from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
-
 import { useNavigate } from "react-router-dom";
-
-import LigthModeIcon from "@mui/icons-material/LightMode";
-import DarkModeIcon from "@mui/icons-material/DarkMode";
+import { LightMode, DarkMode, Menu, Close } from "@mui/icons-material";
 
 import MovinoteIcon1 from "../assets/Movinote-Logo.png";
 
-export interface NavBarProps {
-    navItems: string[];
+interface NavItem {
+    label: string;
+    link: string;
+}
+
+interface NavBarProps {
+    navItems: NavItem[];
     isDarkMode: boolean;
     onThemeToggle: () => void;
 }
 
 export const NavBar = ({ navItems, isDarkMode, onThemeToggle }: NavBarProps) => {
-    let navigate = useNavigate();
+    const navigate = useNavigate();
+    const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
 
-    const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
-    const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
-
-    const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
-        setAnchorElNav(event.currentTarget);
-    };
-
-    const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
-        setAnchorElUser(event.currentTarget);
+    const handleOpenNavMenu = () => {
+        setIsDrawerOpen(true);
     };
 
     const handleCloseNavMenu = (link: string) => {
-        setAnchorElNav(null);
-        navigate(link);
-    };
-
-    const handleCloseUserMenu = (link: string) => {
-        setAnchorElUser(null);
+        setIsDrawerOpen(false);
         navigate(link);
     };
 
     const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
     return (
         <AppBar position="fixed" color="default" elevation={1}>
-            <Toolbar sx={{ justifyContent: 'space-between' }}>
+            <Toolbar sx={{ justifyContent: "space-between" }}>
                 {/* Logo and title */}
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                    <IconButton edge="start" color="inherit" sx={{ mr: 1 }}>
-                        <img src={MovinoteIcon1} alt="Movinote Logo" style={{ width: 40, height: 40 }} />
+                <Box sx={{ display: "flex", alignItems: "center" }}>
+                    <IconButton
+                        edge="start"
+                        color="inherit"
+                        sx={{ mr: 1 }}
+                        onClick={() => handleCloseNavMenu("/")}
+                    >
+                        <img
+                            src={MovinoteIcon1}
+                            alt="Movinote Logo"
+                            style={{ width: 40, height: 40 }}
+                        />
                     </IconButton>
                     <Typography variant="h6" sx={{ fontWeight: 700 }}>
-                        <span style={{ color: '#B71C1C' }}>MOVI</span>NOTE
+                        <span style={{ color: theme.palette.primary.main }}>
+                            MOVI
+                        </span>
+                        NOTE
                     </Typography>
                 </Box>
 
                 {/* Navigation items */}
                 {!isMobile && (
-                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                    <Box sx={{ display: "flex", alignItems: "center" }}>
                         {navItems.map((item) => (
                             <MenuItem
-                                key={item}
-                                onClick={() => handleCloseNavMenu("/" + item.toLowerCase())}
+                                key={item.label}
+                                onClick={() => handleCloseNavMenu(item.link)}
                             >
-                                <Typography textAlign="center" variant="h6">
-                                    {item}
+                                <Typography
+                                    textAlign="center"
+                                    variant="h6"
+                                    sx={{
+                                        fontSize: 16,
+                                        textTransform: "uppercase",
+                                        fontWeight: 400,
+                                    }}
+                                >
+                                    {item.label}
                                 </Typography>
                             </MenuItem>
                         ))}
-                        <Box sx={{ display: 'flex', alignItems: 'center', ml: 2 }}>
-                            <LigthModeIcon sx={{ fontSize: 20, opacity: isDarkMode ? 0.4 : 1 }} />
+                        <Box
+                            sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                ml: 2,
+                            }}
+                        >
+                            <LightMode
+                                sx={{
+                                    fontSize: 20,
+                                    opacity: isDarkMode ? 0.4 : 1,
+                                }}
+                            />
                             <Switch
                                 checked={isDarkMode}
                                 onChange={onThemeToggle}
                                 color="default"
                             />
-                            <DarkModeIcon sx={{ fontSize: 20, opacity: isDarkMode ? 1 : 0.4 }} />
+                            <DarkMode
+                                sx={{
+                                    fontSize: 20,
+                                    opacity: isDarkMode ? 1 : 0.4,
+                                }}
+                            />
                         </Box>
                     </Box>
                 )}
+
+                {/* Mobile menu icon */}
+                {isMobile && (
+                    <React.Fragment>
+                        <IconButton
+                            edge="end"
+                            color="inherit"
+                            onClick={handleOpenNavMenu}
+                        >
+                            <Menu />
+                        </IconButton>
+                        <Drawer
+                            anchor="right"
+                            open={isDrawerOpen}
+                            onClose={() => setIsDrawerOpen(false)}
+                        >
+                            <Box
+                                sx={{
+                                    width: 300,
+                                    height: "100%",
+                                }}
+                            >
+                                {/* Header */}
+                                <Box
+                                    sx={{
+                                        display: "flex",
+                                        justifyContent: "space-between",
+                                        alignItems: "center",
+                                        p: 2,
+                                    }}
+                                >
+                                    <Typography variant="h6">Menu</Typography>
+                                    <IconButton
+                                        onClick={() => setIsDrawerOpen(false)}
+                                    >
+                                        <Close />
+                                    </IconButton>
+                                </Box>
+
+                                {/* Navigation */}
+                                <Divider />
+                                <List sx={{ padding: 2 }}>
+                                    {navItems.map((item) => (
+                                        <MenuItem
+                                            key={item.label}
+                                            onClick={() =>
+                                                handleCloseNavMenu(item.link)
+                                            }
+                                        >
+                                            <Typography
+                                                textAlign="center"
+                                                variant="h6"
+                                                sx={{
+                                                    fontSize: 16,
+                                                    textTransform: "uppercase",
+                                                    fontWeight: 400,
+                                                }}
+                                            >
+                                                {item.label}
+                                            </Typography>
+                                        </MenuItem>
+                                    ))}
+                                </List>
+
+                                {/* Mode Selection */}
+                                <Divider />
+                                <Box p={2}>
+                                    <Typography
+                                        variant="button"
+                                        color="textSecondary"
+                                    >
+                                        Mode
+                                    </Typography>
+                                    <ToggleButtonGroup
+                                        value={isDarkMode ? "dark" : "light"}
+                                        exclusive
+                                        fullWidth
+                                        onChange={() => onThemeToggle()}
+                                        sx={{
+                                            display: "flex",
+                                            justifyContent: "center",
+                                            mt: 1,
+                                        }}
+                                        color="primary"
+                                    >
+                                        <ToggleButton value="light">
+                                            <LightMode sx={{ fontSize: 20 }} />
+                                            <Typography
+                                                variant="subtitle1"
+                                                sx={{ ml: 1 }}
+                                            >
+                                                Light
+                                            </Typography>
+                                        </ToggleButton>
+                                        <ToggleButton value="dark">
+                                            <Typography
+                                                variant="subtitle1"
+                                                sx={{ ml: 1 }}
+                                            >
+                                                Dark
+                                            </Typography>
+                                            <DarkMode sx={{ fontSize: 20 }} />
+                                        </ToggleButton>
+                                    </ToggleButtonGroup>
+                                </Box>
+                            </Box>
+                        </Drawer>
+                    </React.Fragment>
+                )}
             </Toolbar>
         </AppBar>
-    )
+    );
 };
