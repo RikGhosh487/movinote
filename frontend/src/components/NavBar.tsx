@@ -79,6 +79,8 @@ export const NavBar = ({ navItems, isDarkMode, onThemeToggle }: NavBarProps) => 
                             <MenuItem
                                 key={item.label}
                                 onClick={() => handleCloseNavMenu(item.link)}
+                                role="button"
+                                tabIndex={0}
                             >
                                 <Typography
                                     textAlign="center"
@@ -168,6 +170,8 @@ export const NavBar = ({ navItems, isDarkMode, onThemeToggle }: NavBarProps) => 
                                             onClick={() =>
                                                 handleCloseNavMenu(item.link)
                                             }
+                                            role="button"
+                                            tabIndex={0}
                                         >
                                             <Typography
                                                 textAlign="center"
